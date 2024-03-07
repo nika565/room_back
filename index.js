@@ -10,6 +10,10 @@ const app = express();
 // Configuração de cors
 app.use(cors(corsOptions));
 
+app.get('/test', (req, res) => {
+    res.json({msg: `Olá mundo`})
+});
+
 // Criando servidor para aplicação juntamente com o socket.io
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -34,7 +38,8 @@ io.on('connection', (socket) => {
     socket.on('mensagemSala', (dados) => {
         console.log('DADOS:', dados.sala)
         console.log('MSG:', dados.mensagem)
-        io.to(dados.sala).emit('mensagem', dados.mensagem);
+        console.log('USER:', dados.userId)
+        io.to(dados.sala).emit('mensagem', dados);
     });
 
     socket.on('disconnect', () => {
@@ -47,3 +52,5 @@ io.on('connection', (socket) => {
 server.listen(3333, () => {
     console.log(`Acesse: http://localhost:3333`);
 });
+
+export default app;
